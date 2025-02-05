@@ -21,27 +21,35 @@ void transposeSquare(Matrix* matrix){
     }
 }
 
+int sameDim(Matrix* term1, Matrix* term2){
+    //Checks if they have the same dimensions
+    if (term1->rows!=term2->rows||term1->cols!=term2->cols){
+        // The two matrix has different dimensions
+        return 0;
+    }
+    return 1;
+}
+
 void copyMatrix(Matrix* original, Matrix* receiver){
     // copies the matrix from original to the receiver
-    if (original->rows!=receiver->rows||original->cols!=reciever->cols){
-        // The two matrix has different dimensions
+    if (!sameDim(original, receiver)){
         return -1;
     }
 
     for (int i = 0; i< original->rows; i++){
         for (int j = 0; j< original->cols; j++){
-            receiver->data[i][j] = original->data[i][j] 
+            receiver->data[i][j] = original->data[i][j];
         }
     }
 }
 
-void transpose(Matrix* matrix) {
+void transpose(Matrix** matrix) {
     // Transposes a matrix
-    Matrix* nmatrix = createMatrix(matrix->cols, matrix->rows);
+    Matrix* nmatrix = createMatrix((*matrix)->cols, (*matrix)->rows);
     
-    for (int i = 0; i < matrix->rows; i++){
-        for (int j = 0; j < matrix->cols; j++){
-            nmatrix->data[j][i] = matrix->data[i][j];
+    for (int i = 0; i < (*matrix)->rows; i++){
+        for (int j = 0; j < (*matrix)->cols; j++){
+            nmatrix->data[j][i] = (*matrix)->data[i][j];
         }
     }
 
@@ -51,7 +59,7 @@ void transpose(Matrix* matrix) {
 }
 
 void swap(double* a, double* b){
-    # swap two doubles
+    // swap two doubles
     double i = *a;
     *a = *b;
     *b = i;
@@ -68,10 +76,87 @@ void freeMatrix(Matrix* matrix){
 }
 
 void printMatrix(Matrix* matrix){
+    // prints the matrix 
     for (int i = 0; i < matrix->rows; i++){
         for(int j = 0; j < matrix->cols; j++){
             printf("%f ", matrix->data[i][j]);
         }
         printf("\n");
     }
+}
+
+Matrix* addMatrix(Matrix* term1, Matrix* term2){
+    // Adds term1 and term2
+    if(!sameDim(term1, term2)){
+        return -1;
+    }
+
+    Matrix* sum = createMatrix(term1->rows, term1->cols);
+
+    for(int i = 0; i < term1->rows; i++){
+        for (int j = 0; j < term2->cols; j++){
+            sum->data[i][j] = term1->data[i][j] + term2->data[i][j];
+        }
+    }
+    
+    return sum;
+}
+
+Matrix* sProduct(double scalar, Matrix* matrix){
+
+    Matrix* product = createMatrix(matrix->rows, matrix->cols);
+
+    for(int i = 0; i < matrix->rows; i++){
+        for (int j = 0; j < matrix->cols; j++){
+            product->data[i][j] = matrix->data[i][j]*scalar;
+        }
+    }
+    
+    return product;
+}
+
+double determinant(Matrix* matrix){
+    // Implements LUP for solving determinant
+
+}
+
+double detLowerTri(Matrix* matrix){
+    // Implements forwards subsitution algorithm
+    
+    if (!isLowerTri(matrix)){   return -1;  }
+
+    // Checks if there is zeros on the principle diagonal
+
+    for (int i = 0; i < matrix->rows; i++){
+        if (matrix->data[i][i] == 0){
+            return -1;
+        }
+    }
+
+    // Finds the determinant
+
+}
+
+int isLowerTri(Matrix* matrix){
+    // Checks if input is a lower triangular matrix
+    for (int i = 0; i < matrix->rows; i++){
+        for (int j = i; j < matrix->cols; j++){
+            if (matrix->data[i][j] != 0){
+                return 0;
+            }
+        }
+    }
+    return 1;
+}
+
+int isUpperTri(Matrix* matrix){
+    // Checks if input is an upper triangular matrix
+    for (int i = 0; i < matrix->rows; i++){
+        for (int j = 0; j < i + 1; j++){
+            if (matrix->data[i][j] != 0){
+                return 0;
+            }
+        }
+    }
+    return 1;
 }
