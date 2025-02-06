@@ -9,6 +9,14 @@ Matrix* createMatrix(int rows, int cols){
     for (int i = 0; i < rows; i++){
         matrix->data[i] = (double*)calloc(cols,sizeof(double));
     }
+
+    // Set all value to zero
+
+    for (int i = 0; i < rows; i++){
+        for (int j = 0; j < cols; j++){
+            matrix->data[i][j] = 0;
+        }
+    }
     return matrix;
 }
 
@@ -103,7 +111,7 @@ Matrix* addMatrix(Matrix* term1, Matrix* term2){
 }
 
 Matrix* sProduct(double scalar, Matrix* matrix){
-
+    // The scalar product
     Matrix* product = createMatrix(matrix->rows, matrix->cols);
 
     for(int i = 0; i < matrix->rows; i++){
@@ -112,6 +120,25 @@ Matrix* sProduct(double scalar, Matrix* matrix){
         }
     }
     
+    return product;
+}
+
+Matrix* product(Matrix* term1, Matrix* term2){
+    // The Matrix Product
+
+    // Confirm that dimensions are compatible
+    if (!(term1->cols == term2->rows)) {    return -1;  }
+
+    Matrix* product = createMatrix(term1->rows, term2->cols);
+
+    for (int i = 0; i < term1->rows; i++){
+        for (int j = 0; j < term2->cols; j++){
+            for (int k = 0; k < term2->rows; k++){
+                product->data[i][j] += term1->data[i][k]*term2->data[j][k];
+            }
+        }
+    }
+
     return product;
 }
 
@@ -125,19 +152,19 @@ double detLowerTri(Matrix* matrix){
     
     if (!isLowerTri(matrix)){   return -1;  }
 
-    // Checks if there is zeros on the principle diagonal
-
-    for (int i = 0; i < matrix->rows; i++){
-        if (matrix->data[i][i] == 0){
-            return -1;
-        }
-    }
+    double det = 1;
 
     // Finds the determinant
 
+    for(int i = 0; i < matrix->rows; i++){
+        det *= matrix->data[i][i];
+    }
+
+    return det;
 }
 
 int isLowerTri(Matrix* matrix){
+    
     // Checks if input is a lower triangular matrix
     for (int i = 0; i < matrix->rows; i++){
         for (int j = i; j < matrix->cols; j++){
@@ -159,4 +186,9 @@ int isUpperTri(Matrix* matrix){
         }
     }
     return 1;
+}
+
+int isSquare(Matrix* matrix){
+    if (matrix->cols==matrix->rows) {return 1;}
+    return 0;
 }
