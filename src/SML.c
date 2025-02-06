@@ -41,6 +41,7 @@ int sameDim(Matrix* term1, Matrix* term2){
 void copyMatrix(Matrix* original, Matrix* receiver){
     // copies the matrix from original to the receiver
     if (!sameDim(original, receiver)){
+        printf("Unable to copy Matrix, the two matrix have different dimensions");
         return -1;
     }
 
@@ -96,6 +97,7 @@ void printMatrix(Matrix* matrix){
 Matrix* addMatrix(Matrix* term1, Matrix* term2){
     // Adds term1 and term2
     if(!sameDim(term1, term2)){
+        printf("Unable to add Matrix, the two matrix have different dimensions");
         return -1;
     }
 
@@ -127,7 +129,10 @@ Matrix* product(Matrix* term1, Matrix* term2){
     // The Matrix Product
 
     // Confirm that dimensions are compatible
-    if (!(term1->cols == term2->rows)) {    return -1;  }
+    if (!(term1->cols == term2->rows)) {
+        printf("Unable to multiply matrices, their dimensions are incompatible");
+        return -1;
+    }
 
     Matrix* product = createMatrix(term1->rows, term2->cols);
 
@@ -152,9 +157,91 @@ double determinant(Matrix* matrix){
     return determinant(L)*determinant(U);
 }
 
+void gElim(Matrix* matrix){
+    // Use Guassian elimination to obtain RREF
+    for (int i = 0; i< matrix->rows; i++){
+        for(int j = i; j< matrix->rows; j++){
+            if (matrix->data[j][i] == 0){
+                swapRow(matrix, i, j);
+
+                sProdRow(matrix, i, 1/matrix->data[i][i]);
+
+                for(int k = i + 1; k< matrix->rows; k++){
+                    addRow(matrix, k, i, matrix->data[k][i]);
+                }
+            }
+        }
+    }
+}
+
+void addCol(Matrix* matrix, int addend1, int addend2, double scalar){
+    // Add scalar times addend2'th col to addend1'th row in matrix
+    for (int i = 0; i< matrix->rows; i++){
+        matrix->data[i][addend1] += scalar*matrix->data[i][addend2];
+    }
+}
+
+void addRow(Matrix* matrix, int addend1, int addend2, double scalar){
+    // Add scalar times addend2'th row to addend1'th row in matrix
+    for (int i = 0; i< matrix->cols; i++){
+        matrix->data[addend1][i] += scalar*matrix->data[addend2][i];
+    }
+}
+
+double gElimDet(Matrix* matrix){
+    if (!isSquare(matrix)) {    return -1;  }
+    // Use Guassian elimination to obtain determinants
+
+}
+
+void swapRow(Matrix* matrix, int row1, int row2){
+    // Swaps row1 with row2
+    double temp;
+    for(int i = 0; i < matrix->cols; i++){
+        temp = matrix->data[row1][i];
+        matrix->data[row1][i] = matrix->data[row2][i];
+        matrix->data[row2][i] = temp;
+    }
+}
+
+void swapCol(Matrix* matrix, int col1, int col2){
+    // Swaps col1 with col2
+    double temp;
+    for(int i = 0; i < matrix->rows; i++){
+        temp = matrix->data[i][col1];
+        matrix->data[i][col1] = matrix->data[i][col2];
+        matrix->data[i][col2] = temp;
+    }
+}
+
+void sProdCol(Matrix* matrix, int column, double scalar){
+    // Multiply a column of the matrix by a scalar
+    for(int i = 0; i < matrix->rows; i++){
+        matrix->data[i][column] *= scalar;
+    }
+}
+
+void sProdRow(Matrix* matrix, int row, double scalar){
+    // Multiply a row of the matrix by a scalar
+    for(int i = 0; i < matrix->cols; i++){
+        matrix->data[row][i] *= scalar;
+    }
+}
+
+
 void LUP(Matrix* matrix, Matrix* L, Matrix* U){
+    // Check square-ness
     if (!isSquare(matrix)) {
+        printf("Unable to apply LU, matrix is not square");
         return -1;
+    }
+
+    // Check for zero's on the principle diagonal
+    for (int i = 0; i < matrix->cols; i++){
+        if (matrix->data[i][i] == 0) {
+            printf("Unable to apply LU, zeros exist on principle diagonal");
+            return -1;
+        }
     }
 
     // Decompose a matrix into LU form
@@ -177,7 +264,10 @@ void LUP(Matrix* matrix, Matrix* L, Matrix* U){
 double detTri(Matrix* matrix){
     // Implements forwards subsitution algorithm
     
-    if (!isLowerTri(matrix)||!isUpperTri(matrix)){   return -1;  }
+    if (!isLowerTri(matrix)||!isUpperTri(matrix)){  
+        printf("Unable to find determinant, Matrix isn't triangular");
+        return -1;
+    }
 
     double det = 1;
 
