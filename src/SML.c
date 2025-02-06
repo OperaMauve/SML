@@ -147,10 +147,10 @@ double determinant(Matrix* matrix){
 
 }
 
-double detLowerTri(Matrix* matrix){
+double detTri(Matrix* matrix){
     // Implements forwards subsitution algorithm
     
-    if (!isLowerTri(matrix)){   return -1;  }
+    if (!isLowerTri(matrix)||!isUpperTri(matrix)){   return -1;  }
 
     double det = 1;
 
