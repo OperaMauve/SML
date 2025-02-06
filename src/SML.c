@@ -148,6 +148,15 @@ Matrix* product(Matrix* term1, Matrix* term2){
 }
 
 double determinant(Matrix* matrix){
+    // See if zeros exist on principle diagonal
+
+    for (int i = 0; i < matrix->cols; i++){
+        if (matrix->data[i][i] == 0) {
+            return gElimDet(matrix);
+        }
+    }
+
+
     // Use LUP 
     Matrix* L;
     Matrix* U;
@@ -161,13 +170,14 @@ void gElim(Matrix* matrix){
     // Use Guassian elimination to obtain RREF
     for (int i = 0; i< matrix->rows; i++){
         for(int j = i; j< matrix->rows; j++){
-            if (matrix->data[j][i] == 0){
+            if (matrix->data[j][i] != 0){
                 swapRow(matrix, i, j);
 
                 sProdRow(matrix, i, 1/matrix->data[i][i]);
 
                 for(int k = i + 1; k< matrix->rows; k++){
-                    addRow(matrix, k, i, matrix->data[k][i]);
+                    addRow(matrix, k, i, -matrix->data[k][i]);
+                    matrix->data[k][i] = 0;
                 }
             }
         }
@@ -189,9 +199,81 @@ void addRow(Matrix* matrix, int addend1, int addend2, double scalar){
 }
 
 double gElimDet(Matrix* matrix){
-    if (!isSquare(matrix)) {    return -1;  }
+    if (!isSquare(matrix)) {
+        printf("Unable to find determinant, Non square matrixs doesn't have a determinant");
+        return -1;  
+    }
     // Use Guassian elimination to obtain determinants
+    int det = 1;
+    Matrix* RREF = createMatrix(matrix->rows, matrix->cols);
 
+    for (int i = 0; i< RREF->rows; i++){
+        for(int j = i; j< RREF->rows; j++){
+            if (RREF->data[j][i] != 0){
+                swapRow(RREF, i, j);
+                if (i != j){
+                    det *= -1;
+                }
+
+                sProdRow(RREF, i, 1/RREF->data[i][i]);
+                det *= 1/RREF->data[i][i];
+
+                for(int k = i + 1; k< RREF->rows; k++){
+                    addRow(RREF, k, i, -RREF->data[k][i]);
+                    RREF->data[k][i] = 0;
+                }
+            }
+        }
+    }
+    
+    det *= detTri(RREF);
+
+    freeMatrix(RREF);
+
+    return det;
+}
+
+void squarify(Matrix** matrix){
+    // Make the matrix square
+    int a = max((*matrix)->rows,(*matrix)->cols);
+    Matrix* Nmatrix = createMatrix(a , a);
+    for(int i = 0; i < a; i++){
+        for(int j = 0; j < a ; j++){
+            Nmatrix->data[i][j] = (*matrix)->data[i][j];
+        }
+    }
+}
+
+int max(int a, int b){
+    // Returns the greater between a and b, if they are equal, return a
+    if ( a < b){
+        return b;
+    }
+    return a;
+}
+
+int min(int a, int b){
+    // Returns the lesser between a and b, if they are equal, return a
+    if ( a > b){
+        return b;
+    }
+    return a;
+}
+
+double maxDouble(double a, double b){
+    // Returns the greater between a and b, if they are equal, return a
+    if ( a < b){
+        return b;
+    }
+    return a;
+}
+
+double minDouble(double a, double b){
+    // Returns the lesser between a and b, if they are equal, return a
+    if ( a > b){
+        return b;
+    }
+    return a;
 }
 
 void swapRow(Matrix* matrix, int row1, int row2){
