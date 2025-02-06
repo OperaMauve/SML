@@ -143,8 +143,35 @@ Matrix* product(Matrix* term1, Matrix* term2){
 }
 
 double determinant(Matrix* matrix){
-    // Implements LUP for solving determinant
+    // Use LUP 
+    Matrix* L;
+    Matrix* U;
+    
+    LUP(matrix, L, U);
 
+    return determinant(L)*determinant(U);
+}
+
+void LUP(Matrix* matrix, Matrix* L, Matrix* U){
+    if (!isSquare(matrix)) {
+        return -1;
+    }
+
+    // Decompose a matrix into LU form
+    L = createMatrix(matrix->rows, matrix->cols);
+    U = createMatrix(matrix->rows, matrix->cols);
+
+    for (int i = 0; i < matrix->rows; i++){
+        L->data[i][i] = 1;
+        U->data[i][i] = matrix->data[i][i];
+
+        for (int j = i + 1; j < matrix->cols; j++){
+            L->data[i][j] = 0;
+            L->data[j][i] = matrix->data[j][i]/matrix->data[i][i];
+            U->data[j][i] = 0;
+            U->data[i][j] = matrix->data[i][j];
+        }
+    }
 }
 
 double detTri(Matrix* matrix){
