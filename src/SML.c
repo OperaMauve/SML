@@ -413,3 +413,15 @@ int isSquare(Matrix* matrix){
     if (matrix->cols==matrix->rows) {return 1;}
     return 0;
 }
+
+double trace(Matrix* matrix){
+    if (!isSquare(matrix)){
+        printf("Unable to find trace, the matrix is not square");
+        return -1;
+    }
+    double trace = 0;
+    for(int i = 0; i < matrix->rows; i++){
+        trace += matrix->data[i][i];
+    }
+    return trace;
+}
