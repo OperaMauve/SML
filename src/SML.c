@@ -167,18 +167,29 @@ double determinant(Matrix* matrix){
 }
 
 void gElim(Matrix* matrix){
-    // Use Guassian elimination to obtain RREF
-    for (int i = 0; i< matrix->rows; i++){
-        for(int j = i; j< matrix->rows; j++){
-            if (matrix->data[j][i] != 0){
-                swapRow(matrix, i, j);
+    // To do. Partial pivot for better selection of leading term
+    // Use Guassian elimination to obtain upper triangular form
+    for (int i = 0; i < matrix->rows; i++){
+        // iterate through the amount of most required columns for upper triangular form
+        for (int j = i; j < matrix->rows; j++){
+            // iterate through all the rows that is not in upper triangular form
 
-                sProdRow(matrix, i, 1/matrix->data[i][i]);
+            if (matrix->data[j][i] != 0){
+                // Found suitable row for i'th column
+
+                swapRow(matrix, i, j);
+                sProdRow(matrix, i, 1.0/matrix->data[i][i]);
+                // Pivot the row and set its leading term to 1
+                matrix->data[i][i] = 1;
+                // Ensures numerical stability by explicity setting the leading term to 1
 
                 for(int k = i + 1; k< matrix->rows; k++){
                     addRow(matrix, k, i, -matrix->data[k][i]);
+                    // Add to the row such that the elements below the leading term is now 0
                     matrix->data[k][i] = 0;
+                    // Guarantees numerical stability by explicitly setting it to 0
                 }
+                break;
             }
         }
     }
@@ -205,30 +216,41 @@ double gElimDet(Matrix* matrix){
     }
     // Use Guassian elimination to obtain determinants
     int det = 1;
-    Matrix* RREF = createMatrix(matrix->rows, matrix->cols);
+    Matrix* upperTri = createMatrix(matrix->rows, matrix->cols);
+    copyMatrix(matrix, upperTri);
 
-    for (int i = 0; i< RREF->rows; i++){
-        for(int j = i; j< RREF->rows; j++){
-            if (RREF->data[j][i] != 0){
-                swapRow(RREF, i, j);
-                if (i != j){
-                    det *= -1;
+    // Use Guassian elimination to obtain upper triangular form
+    for (int i = 0; i < upperTri->rows; i++){
+        // iterate through the amount of most required columns for upper triangular form
+        for (int j = i; j < upperTri->rows; j++){
+            // iterate through all the rows that is not in upper triangular form
+
+            if (upperTri->data[j][i] != 0){
+                // Found suitable row for i'th column
+                det *= -1;
+
+                swapRow(upperTri, i, j);
+                sProdRow(upperTri, i, 1.0/upperTri->data[i][i]);
+                det *= 1.0/upperTri->data[i][i];
+                // Pivot the row and set its leading term to 1
+                upperTri->data[i][i] = 1;
+                // Ensures numerical stability by explicity setting the leading term to 1
+
+                for(int k = i + 1; k< upperTri->rows; k++){
+                    addRow(upperTri, k, i, -upperTri->data[k][i]);
+                    // Add to the row such that the elements below the leading term is now 0
+                    upperTri->data[k][i] = 0;
+                    // Guarantees numerical stability by explicitly setting it to 0
                 }
-
-                sProdRow(RREF, i, 1/RREF->data[i][i]);
-                det *= 1/RREF->data[i][i];
-
-                for(int k = i + 1; k< RREF->rows; k++){
-                    addRow(RREF, k, i, -RREF->data[k][i]);
-                    RREF->data[k][i] = 0;
-                }
+                break;
             }
+            return 0;
         }
     }
     
-    det *= detTri(RREF);
+    det *= detTri(upperTri);
 
-    freeMatrix(RREF);
+    freeMatrix(upperTri);
 
     return det;
 }
