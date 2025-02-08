@@ -52,21 +52,6 @@ void copyMatrix(Matrix* original, Matrix* receiver){
     }
 }
 
-void transpose(Matrix** matrix) {
-    // Transposes a matrix
-    Matrix* nmatrix = createMatrix((*matrix)->cols, (*matrix)->rows);
-    
-    for (int i = 0; i < (*matrix)->rows; i++){
-        for (int j = 0; j < (*matrix)->cols; j++){
-            nmatrix->data[j][i] = (*matrix)->data[i][j];
-        }
-    }
-
-    freeMatrix(*matrix);
-
-    *matrix = nmatrix;
-}
-
 void swap(double* a, double* b){
     // swap two doubles
     double i = *a;
@@ -125,28 +110,6 @@ Matrix* sProduct(double scalar, Matrix* matrix){
     return product;
 }
 
-Matrix* product(Matrix* term1, Matrix* term2){
-    // The Matrix Product
-
-    // Confirm that dimensions are compatible
-    if (!(term1->cols == term2->rows)) {
-        printf("Unable to multiply matrices, their dimensions are incompatible");
-        return -1;
-    }
-
-    Matrix* product = createMatrix(term1->rows, term2->cols);
-
-    for (int i = 0; i < term1->rows; i++){
-        for (int j = 0; j < term2->cols; j++){
-            for (int k = 0; k < term2->rows; k++){
-                product->data[i][j] += term1->data[i][k]*term2->data[j][k];
-            }
-        }
-    }
-
-    return product;
-}
-
 double determinant(Matrix* matrix){
     // See if zeros exist on principle diagonal
 
@@ -195,20 +158,6 @@ void gElim(Matrix* matrix){
     }
 }
 
-void addCol(Matrix* matrix, int addend1, int addend2, double scalar){
-    // Add scalar times addend2'th col to addend1'th row in matrix
-    for (int i = 0; i< matrix->rows; i++){
-        matrix->data[i][addend1] += scalar*matrix->data[i][addend2];
-    }
-}
-
-void addRow(Matrix* matrix, int addend1, int addend2, double scalar){
-    // Add scalar times addend2'th row to addend1'th row in matrix
-    for (int i = 0; i< matrix->cols; i++){
-        matrix->data[addend1][i] += scalar*matrix->data[addend2][i];
-    }
-}
-
 double gElimDet(Matrix* matrix){
     if (!isSquare(matrix)) {
         printf("Unable to find determinant, Non square matrixs doesn't have a determinant");
@@ -254,84 +203,6 @@ double gElimDet(Matrix* matrix){
 
     return det;
 }
-
-void squarify(Matrix** matrix){
-    // Make the matrix square
-    int a = max((*matrix)->rows,(*matrix)->cols);
-    Matrix* Nmatrix = createMatrix(a , a);
-    for(int i = 0; i < a; i++){
-        for(int j = 0; j < a ; j++){
-            Nmatrix->data[i][j] = (*matrix)->data[i][j];
-        }
-    }
-}
-
-int max(int a, int b){
-    // Returns the greater between a and b, if they are equal, return a
-    if ( a < b){
-        return b;
-    }
-    return a;
-}
-
-int min(int a, int b){
-    // Returns the lesser between a and b, if they are equal, return a
-    if ( a > b){
-        return b;
-    }
-    return a;
-}
-
-double maxDouble(double a, double b){
-    // Returns the greater between a and b, if they are equal, return a
-    if ( a < b){
-        return b;
-    }
-    return a;
-}
-
-double minDouble(double a, double b){
-    // Returns the lesser between a and b, if they are equal, return a
-    if ( a > b){
-        return b;
-    }
-    return a;
-}
-
-void swapRow(Matrix* matrix, int row1, int row2){
-    // Swaps row1 with row2
-    double temp;
-    for(int i = 0; i < matrix->cols; i++){
-        temp = matrix->data[row1][i];
-        matrix->data[row1][i] = matrix->data[row2][i];
-        matrix->data[row2][i] = temp;
-    }
-}
-
-void swapCol(Matrix* matrix, int col1, int col2){
-    // Swaps col1 with col2
-    double temp;
-    for(int i = 0; i < matrix->rows; i++){
-        temp = matrix->data[i][col1];
-        matrix->data[i][col1] = matrix->data[i][col2];
-        matrix->data[i][col2] = temp;
-    }
-}
-
-void sProdCol(Matrix* matrix, int column, double scalar){
-    // Multiply a column of the matrix by a scalar
-    for(int i = 0; i < matrix->rows; i++){
-        matrix->data[i][column] *= scalar;
-    }
-}
-
-void sProdRow(Matrix* matrix, int row, double scalar){
-    // Multiply a row of the matrix by a scalar
-    for(int i = 0; i < matrix->cols; i++){
-        matrix->data[row][i] *= scalar;
-    }
-}
-
 
 void LUP(Matrix* matrix, Matrix* L, Matrix* U){
     // Check square-ness
@@ -425,3 +296,4 @@ double trace(Matrix* matrix){
     }
     return trace;
 }
+
