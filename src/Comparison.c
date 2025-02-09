@@ -1,4 +1,4 @@
-#include <SML.h>
+#include "..\include\SML.h"
 
 int max(int a, int b){
     // Returns the greater between a and b, if they are equal, return a

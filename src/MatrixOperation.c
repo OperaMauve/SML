@@ -1,4 +1,4 @@
-#include <SML.h>
+#include "..\include\SML.h"
 
 void transpose(Matrix** matrix){
     // Transposes a matrix
@@ -21,7 +21,7 @@ Matrix* product(Matrix* term1, Matrix* term2){
     // Confirm that dimensions are compatible
     if (!(term1->cols == term2->rows)) {
         printf("Unable to multiply matrices, their dimensions are incompatible");
-        return -1;
+        exit(1);
     }
 
     Matrix* product = createMatrix(term1->rows, term2->cols);

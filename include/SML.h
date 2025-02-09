@@ -17,11 +17,27 @@ typedef struct {
     double** data;
 } SquareMatrix;
 
+// SML
+Matrix* createMatrix(int rows, int cols);
 void transposeSquare(Matrix* matrix);
-void transpose(Matrix** matrix);
 void swap(double* a, double* b);
 void freeMatrix(Matrix* matrix);
 void printMatrix(Matrix* matrix);
+int sameDim(Matrix* term1, Matrix* term2);
+void copyMatrix(Matrix* original, Matrix* receiver);
+void freeMatrix(Matrix* matrix);
+void printMatrix(Matrix* matrix);
+Matrix* addMatrix(Matrix* term1, Matrix* term2);
+Matrix* sProduct(double scalar, Matrix* matrix);
+double determinant(Matrix* matrix);
+void gElim(Matrix* matrix);
+double gElimDet(Matrix* matrix);
+void LUP(Matrix* matrix, Matrix* L, Matrix* U);
+double detTri(Matrix* matrix);
+int isLowerTri(Matrix* matrix);
+int isUpperTri(Matrix* matrix);
+int isSquare(Matrix* matrix);
+double trace(Matrix* matrix);
 
 // Comparison
 int max(int a, int b);

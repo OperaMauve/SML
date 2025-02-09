@@ -1,4 +1,4 @@
-#include "SML.h"
+#include "..\include\SML.h"
 
 Matrix* createMatrix(int rows, int cols){
     // creates a matrix
@@ -42,7 +42,7 @@ void copyMatrix(Matrix* original, Matrix* receiver){
     // copies the matrix from original to the receiver
     if (!sameDim(original, receiver)){
         printf("Unable to copy Matrix, the two matrix have different dimensions");
-        return -1;
+        exit(1);
     }
 
     for (int i = 0; i< original->rows; i++){
@@ -83,7 +83,7 @@ Matrix* addMatrix(Matrix* term1, Matrix* term2){
     // Adds term1 and term2
     if(!sameDim(term1, term2)){
         printf("Unable to add Matrix, the two matrix have different dimensions");
-        return -1;
+        exit(1);
     }
 
     Matrix* sum = createMatrix(term1->rows, term1->cols);
@@ -121,12 +121,15 @@ double determinant(Matrix* matrix){
 
 
     // Use LUP 
-    Matrix* L;
-    Matrix* U;
+    Matrix* L = createMatrix(matrix->rows, matrix->cols);
+    Matrix* U = createMatrix(matrix->rows, matrix->cols);
     
     LUP(matrix, L, U);
 
-    return determinant(L)*determinant(U);
+    double det = detTri(U);
+    freeMatrix(L);
+    freeMatrix(U);
+    return det;
 }
 
 void gElim(Matrix* matrix){
@@ -161,7 +164,7 @@ void gElim(Matrix* matrix){
 double gElimDet(Matrix* matrix){
     if (!isSquare(matrix)) {
         printf("Unable to find determinant, Non square matrixs doesn't have a determinant");
-        return -1;  
+        exit(1);
     }
     // Use Guassian elimination to obtain determinants
     int det = 1;
@@ -208,20 +211,18 @@ void LUP(Matrix* matrix, Matrix* L, Matrix* U){
     // Check square-ness
     if (!isSquare(matrix)) {
         printf("Unable to apply LU, matrix is not square");
-        return -1;
+        exit(1);
     }
 
     // Check for zero's on the principle diagonal
     for (int i = 0; i < matrix->cols; i++){
         if (matrix->data[i][i] == 0) {
             printf("Unable to apply LU, zeros exist on principle diagonal");
-            return -1;
+            exit(1);
         }
     }
 
     // Decompose a matrix into LU form
-    L = createMatrix(matrix->rows, matrix->cols);
-    U = createMatrix(matrix->rows, matrix->cols);
 
     for (int i = 0; i < matrix->rows; i++){
         L->data[i][i] = 1;
@@ -241,7 +242,7 @@ double detTri(Matrix* matrix){
     
     if (!isLowerTri(matrix)||!isUpperTri(matrix)){  
         printf("Unable to find determinant, Matrix isn't triangular");
-        return -1;
+        exit(1);
     }
 
     double det = 1;
@@ -288,7 +289,7 @@ int isSquare(Matrix* matrix){
 double trace(Matrix* matrix){
     if (!isSquare(matrix)){
         printf("Unable to find trace, the matrix is not square");
-        return -1;
+        exit(1);
     }
     double trace = 0;
     for(int i = 0; i < matrix->rows; i++){

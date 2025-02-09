@@ -1,4 +1,4 @@
-#include <SML.h>
+#include "..\include\SML.h"
 
 void swapRow(Matrix* matrix, int row1, int row2){
     // Swaps row1 with row2
