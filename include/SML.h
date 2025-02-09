@@ -39,6 +39,7 @@ int isLowerTri(Matrix* matrix);
 int isUpperTri(Matrix* matrix);
 int isSquare(Matrix* matrix);
 double trace(Matrix* matrix);
+Matrix* eye(int size);
 
 // Comparison
 int max(int a, int b);
