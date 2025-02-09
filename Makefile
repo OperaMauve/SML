@@ -7,7 +7,7 @@ SRC_DIR = src
 BUILD_DIR = build
 
 # Library Name
-LIB_NAME = SML.a
+LIB_NAME = libSML.a
 
 # Object Files (located in src/)
 OBJS = $(patsubst $(SRC_DIR)/%.c, $(BUILD_DIR)/%.o, $(wildcard $(SRC_DIR)/*.c))
@@ -22,5 +22,4 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 # Clean
 .PHONY: clean
 clean:
-	rm -f $(LIB_NAME) $(BUILD_DIR)/*.o
-	rmdir $(BUILD_DIR) 2>/dev/null || true
+	del /Q SML.a $(BUILD_DIR)\*.o
