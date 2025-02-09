@@ -73,7 +73,7 @@ void printMatrix(Matrix* matrix){
     // prints the matrix 
     for (int i = 0; i < matrix->rows; i++){
         for(int j = 0; j < matrix->cols; j++){
-            printf("%f ", matrix->data[i][j]);
+            printf("%5.5f ", matrix->data[i][j]);
         }
         printf("\n");
     }
@@ -298,3 +298,11 @@ double trace(Matrix* matrix){
     return trace;
 }
 
+void inputMatrix(Matrix* matrix, double array[]){
+    // Input an array into a matrix
+    for(int i = 0; i < matrix->rows; i++){
+        for(int j = 0; j < matrix->cols; j++){
+            matrix->data[i][j] = array[i*matrix->rows+j];
+        }
+    }
+}

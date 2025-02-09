@@ -22,4 +22,4 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 # Clean
 .PHONY: clean
 clean:
-	del /Q SML.a $(BUILD_DIR)\*.o
+	del /Q libSML.a $(BUILD_DIR)\*.o
