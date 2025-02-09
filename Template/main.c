@@ -1,6 +1,7 @@
-#include "SML.h"
+#include "..\include\SML.h"
 
 int main(){
-    Matrix* eye = eye(5);
+    Matrix* eyes = eye(5);
+    printMatrix(eyes);
     return 0;
 }
