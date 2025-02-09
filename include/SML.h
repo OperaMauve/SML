@@ -18,6 +18,7 @@ typedef struct {
 } SquareMatrix;
 
 // SML
+void inputMatrix(Matrix* matrix, double array[]);
 Matrix* createMatrix(int rows, int cols);
 void transposeSquare(Matrix* matrix);
 void swap(double* a, double* b);
