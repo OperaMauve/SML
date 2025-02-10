@@ -10,6 +10,11 @@ typedef struct {
     double** data;
 } Matrix;
 
+typedef struct {
+    char* token;
+    instructions* next;
+} instructions;
+
 Matrix* createMatrix(int rows, int cols);
 
 typedef struct {
@@ -59,6 +64,14 @@ void addRow(Matrix* matrix, int addend1, int addend2, double scalar);
 void transpose(Matrix** matrix);
 Matrix* product(Matrix* term1, Matrix* term2);
 void squarify(Matrix** matrix);
+
+//Function
+void applyFunction(Matrix* matrix, char *function);
+int categorise(char character);
+
+//Conditions
+int isNumber(char character);
+int isOperator(char character);
 
 #endif
 
