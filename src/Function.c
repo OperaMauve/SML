@@ -1,8 +1,11 @@
 #include "..\include\SML.h"
 
-// Step 1, write lexer
-// Step 2, write parser
-// Step 3, win
+// Lexer (Infix >>> Polish)
+
+void lexer(char* instruction, char* output){
+    output = (char*)malloc(sizeof(instruction));
+    
+}
 
 void applyFunction(Matrix* matrix, char *function){
     // Apply function to each element on the matrix
@@ -19,11 +22,18 @@ void applyFunction(Matrix* matrix, char *function){
     }
 }
 
-void freeInstruct(instructions* Instruct){
-    while (Instruct->token != '\0'){
-        free(Instruct)
-        Instruct = Instruct->next;
+int precedence(char character){
+    if (character == '(' || character == ')'){
+        return 0;        
     }
+    if (character == '/' || character == '*'){
+        return 1;        
+    }
+    if (character == '+' || character == '-'){
+        return 2;        
+    }
+    printf("Invalid Syntax");
+    return 0;
 }
 
 int categorise(char character){

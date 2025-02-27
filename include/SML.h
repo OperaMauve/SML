@@ -3,17 +3,17 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+//Data
+typedef struct {
+    char* arr;
+    int top;
+} stack;
 
 typedef struct {
     int rows;
     int cols;
     double** data;
 } Matrix;
-
-typedef struct {
-    char* token;
-    instructions* next;
-} instructions;
 
 Matrix* createMatrix(int rows, int cols);
 
@@ -73,5 +73,6 @@ int categorise(char character);
 int isNumber(char character);
 int isOperator(char character);
 
-#endif
 
+
+#endif
