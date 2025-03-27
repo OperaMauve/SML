@@ -32,7 +32,6 @@ void printMatrix(Matrix* matrix);
 int sameDim(Matrix* term1, Matrix* term2);
 void copyMatrix(Matrix* original, Matrix* receiver);
 void freeMatrix(Matrix* matrix);
-void printMatrix(Matrix* matrix);
 Matrix* addMatrix(Matrix* term1, Matrix* term2);
 Matrix* sProduct(double scalar, Matrix* matrix);
 double determinant(Matrix* matrix);
