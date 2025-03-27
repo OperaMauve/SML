@@ -79,6 +79,16 @@ void printMatrix(Matrix* matrix){
     }
 }
 
+void printMatrix_p(Matrix* matrix, int n){
+    // prints the matrix 
+    for (int i = 0; i < matrix->rows; i++){
+        for(int j = 0; j < matrix->cols; j++){
+            printf("%.*f ", n, matrix->data[i][j]);
+        }
+        printf("\n");
+    }
+}
+
 Matrix* addMatrix(Matrix* term1, Matrix* term2){
     // Adds term1 and term2
     if(!sameDim(term1, term2)){
@@ -163,27 +173,31 @@ void gElim(Matrix* matrix){
 
 double gElimDet(Matrix* matrix){
     if (!isSquare(matrix)) {
-        printf("Unable to find determinant, Non square matrixs doesn't have a determinant");
+        printf("Unable to find determinant, non square matrices doesn't have a determinant");
         exit(1);
     }
     // Use Guassian elimination to obtain determinants
-    int det = 1;
+    float det = 1;
     Matrix* upperTri = createMatrix(matrix->rows, matrix->cols);
     copyMatrix(matrix, upperTri);
-
+    
     // Use Guassian elimination to obtain upper triangular form
     for (int i = 0; i < upperTri->rows; i++){
         // iterate through the amount of most required columns for upper triangular form
         for (int j = i; j < upperTri->rows; j++){
             // iterate through all the rows that is not in upper triangular form
-
+            // shouldn't swap if [i][i] is ok
             if (upperTri->data[j][i] != 0){
                 // Found suitable row for i'th column
-                det *= -1;
-
-                swapRow(upperTri, i, j);
+                if(i != j){
+                    det *= -1;
+                    swapRow(upperTri, i, j);
+                }
+                det *= upperTri->data[i][i];
                 sProdRow(upperTri, i, 1.0/upperTri->data[i][i]);
-                det *= 1.0/upperTri->data[i][i];
+
+                //printf("det is: %lf after multiplying %lf\n",det,upperTri->data[i][i]); bro its the only way ik how to debug
+
                 // Pivot the row and set its leading term to 1
                 upperTri->data[i][i] = 1;
                 // Ensures numerical stability by explicity setting the leading term to 1
@@ -214,7 +228,7 @@ void LUP(Matrix* matrix, Matrix* L, Matrix* U){
         exit(1);
     }
 
-    // Check for zero's on the principle diagonal
+    // Check for zeroes on the principle diagonal
     for (int i = 0; i < matrix->cols; i++){
         if (matrix->data[i][i] == 0) {
             printf("Unable to apply LU, zeros exist on principle diagonal");
@@ -240,7 +254,7 @@ void LUP(Matrix* matrix, Matrix* L, Matrix* U){
 double detTri(Matrix* matrix){
     // Implements forwards subsitution algorithm
     
-    if (!isLowerTri(matrix)||!isUpperTri(matrix)){  
+    if (!isLowerTri(matrix) && !isUpperTri(matrix)){  
         printf("Unable to find determinant, Matrix isn't triangular");
         exit(1);
     }
@@ -260,7 +274,7 @@ int isLowerTri(Matrix* matrix){
     
     // Checks if input is a lower triangular matrix
     for (int i = 0; i < matrix->rows; i++){
-        for (int j = i; j < matrix->cols; j++){
+        for (int j = matrix->cols-1; j > i; j--){
             if (matrix->data[i][j] != 0){
                 return 0;
             }
@@ -271,8 +285,8 @@ int isLowerTri(Matrix* matrix){
 
 int isUpperTri(Matrix* matrix){
     // Checks if input is an upper triangular matrix
-    for (int i = 0; i < matrix->rows; i++){
-        for (int j = 0; j < i + 1; j++){
+    for (int i = 1; i < matrix->rows; i++){
+        for (int j = 0; j < i; j++){
             if (matrix->data[i][j] != 0){
                 return 0;
             }
