@@ -306,3 +306,11 @@ void inputMatrix(Matrix* matrix, double array[]){
         }
     }
 }
+
+Matrix* eye(int size){
+    Matrix* matrix = createMatrix(size, size);
+    for(int i = 0; i < size; i++){
+        matrix->data[i][i] = 1.0;
+    }
+    return matrix;
+}
