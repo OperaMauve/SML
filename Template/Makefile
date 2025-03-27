@@ -7,4 +7,4 @@ LIB_NAME = SML
 
 # Compile and link the program
 main: main.c
-	$(CC) $(CFLAGS) -I$(INC_DIR) -L$(LIB_DIR) -l$(LIB_NAME) -o main main.c
+	$(CC) $(CFLAGS) -I$(INC_DIR) main.c -L$(LIB_DIR) -l$(LIB_NAME) -o main -v
