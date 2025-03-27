@@ -5,9 +5,9 @@
 #include <stdlib.h>
 //Data
 typedef struct {
-    char* arr;
+    char* element;
     int top;
-} stack;
+} Stack;
 
 typedef struct {
     int rows;
@@ -65,14 +65,14 @@ void transpose(Matrix** matrix);
 Matrix* product(Matrix* term1, Matrix* term2);
 void squarify(Matrix** matrix);
 
-//Function
+/*Function
 void applyFunction(Matrix* matrix, char *function);
-int categorise(char character);
+int categorise(char character);*/
 
 //Conditions
 int isNumber(char character);
 int isOperator(char character);
-
+int lexerPriority(char a);
 
 
 #endif

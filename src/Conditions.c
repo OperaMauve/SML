@@ -34,4 +34,21 @@ int isNumber(char character){
     if (character == '.'){
         return 1;
     }
+    return 0;
+}
+
+int isOperator(char character){
+    if (character == '*'){
+        return 1;
+    }
+    if (character == '+'){
+        return 1;
+    }
+    if (character == '-'){
+        return 1;
+    }
+    if (character == '/'){
+        return 1;
+    }
+    return 0;
 }
