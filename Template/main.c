@@ -2,12 +2,19 @@
 
 int main(){
 
-    Matrix* try = createMatrix(3,3);
-    double in[] = {1,2,3,5,4,3,1,0,1};
+    Matrix* try = createMatrix(4,4);
+    double in[] = {1,0,3,-1,0,1,1,-2,0,0,0,0,0,0,0,0};
+    
     inputMatrix(try, in);
-    //printMatrix(try);
-    double det = gElimDet(try);
-    printf("\n %lf",det);
+
+    Matrix** kernels = kernel(try); //returns a pointer to array of pointers
+    //return int of number of basis elements
+    //change pointer to point to the new stuff
+
+    Matrix** img = rowSpace(try);
+    printMatrix(img[1]);
+    printMatrix(try);
+
 
     return 0;
 }

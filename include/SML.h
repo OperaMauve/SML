@@ -9,6 +9,7 @@ typedef struct {
     int top;
 } Stack;
 
+
 typedef struct {
     int rows;
     int cols;
@@ -67,6 +68,12 @@ void squarify(Matrix** matrix);
 /*Function
 void applyFunction(Matrix* matrix, char *function);
 int categorise(char character);*/
+
+//uncatagorised
+Matrix** kernel(Matrix* matrix);
+Matrix** colSpace(Matrix* matrix);
+Matrix** rowSpace(Matrix* matrix);
+Matrix** determinant_cofactor(Matrix* matrix);
 
 //Conditions
 int isNumber(char character);

@@ -316,7 +316,7 @@ void inputMatrix(Matrix* matrix, double array[]){
     // Input an array into a matrix
     for(int i = 0; i < matrix->rows; i++){
         for(int j = 0; j < matrix->cols; j++){
-            matrix->data[i][j] = array[i*matrix->rows+j];
+            matrix->data[i][j] = array[i*(matrix->cols)+j]; //changed matrix->rows to matrix->cols
         }
     }
 }
@@ -327,4 +327,164 @@ Matrix* eye(int size){
         matrix->data[i][i] = 1.0;
     }
     return matrix;
+}
+
+int isZero(Matrix* matrix){
+    for (int i = 0; i< matrix->rows; i++){
+        for(int j = 0; j < matrix->cols; j++){
+            if(matrix->data[i][j] != 0){
+                return 0; // false
+            }
+        }
+    }
+    return 1; //true
+}
+
+int nullity(Matrix* matrix){ //dim(kern) - set 2nd input to 1 if using reduced matrix, 0 otherwise
+    Matrix* cpy = createMatrix(matrix->rows, matrix->cols);
+    copyMatrix(matrix,cpy);
+    gElim(cpy);
+    //number of 0 rows
+}
+
+Matrix** kernel(Matrix* matrix){ //return pointer to basis spanning the nullspace
+    Matrix* cpy = createMatrix(matrix->rows, matrix->cols);
+    copyMatrix(matrix,cpy);
+    gElim(cpy);
+    
+
+    int pivotCols[cpy->cols]; 
+    int freeCols[cpy->cols];
+    int next = 0;
+    int nextf = 0;
+    for(int i = 0; i < cpy-> rows; i++){
+        int determined = 0;
+        for (int j = 0; j < cpy -> cols; j++){
+            if (determined == 0){
+                if (cpy->data[i][j] == 1){
+                    pivotCols[next] = j;
+                    next++;
+                    determined = 1;
+                } 
+                else if (j >= i) {
+                    freeCols[nextf] = j;
+                    nextf++;
+                    determined = 1;
+                }
+            }
+        }
+    }
+    //nextf now has the dimension
+    Matrix** basis = (Matrix**)malloc(sizeof(Matrix*)*nextf); //array of matrices
+    for (int i = 0; i<nextf; i++){
+        basis[i] = (Matrix*)malloc(sizeof(matrix));
+        basis[i] = createMatrix(cpy->cols,1);
+        for(int j = 0; j<cpy->rows; j++){
+            //freeCols index the columns which correspond to free variables
+            //j iterates through all the rows
+            //i iterates through the free variable indices
+
+            if(j == freeCols[i]){
+                basis[i]->data[j][0] = 1;
+            }
+            else{
+                basis[i]->data[j][0]=-1*(cpy->data[j][freeCols[i]]);
+            }
+        }
+    }
+    
+    return basis;
+    // freecols[i] = column of the ith free variable xi
+
+
+
+}
+
+Matrix** colSpace(Matrix* matrix){ //return ptr to array of basis for span/img
+    Matrix* cpy = createMatrix(matrix->rows, matrix->cols);
+    copyMatrix(matrix,cpy);
+    gElim(cpy);
+    int pivotCols[cpy->cols]; 
+    int freeCols[cpy->cols];
+    int next = 0;
+    int nextf = 0;
+    for(int i = 0; i < cpy-> rows; i++){ //getting indices of pivot cols
+        int determined = 0;
+        for (int j = 0; j < cpy -> cols; j++){
+            if (determined == 0){
+                if (cpy->data[i][j] == 1){
+                    pivotCols[next] = j;
+                    next++;
+                    determined = 1;
+                } 
+                else if (j >= i) {
+                    freeCols[nextf] = j;
+                    nextf++;
+                    determined = 1;
+                }
+            }
+        }
+    }
+    Matrix** basis = (Matrix**)malloc(sizeof(Matrix*)*next); // allocate 
+    for(int i = 0; i < next; i++){
+        //literally just return col vectors of leading entry rows
+        basis[i] = createMatrix(cpy->rows,1);
+        for (int j = 0; j < cpy->rows; j++)
+        {
+            basis[i]->data[j][0] = cpy->data[j][pivotCols[i]];
+        }
+        
+    }
+    return basis;
+}
+
+Matrix** rowSpace(Matrix* matrix){ //return ptr to array of basis for span/img
+    Matrix* cpy = createMatrix(matrix->rows, matrix->cols);
+    copyMatrix(matrix,cpy);
+    gElim(cpy);
+    int pivotCols[cpy->cols]; 
+    int freeCols[cpy->cols];
+    int next = 0;
+    int nextf = 0;
+    for(int i = 0; i < cpy-> rows; i++){ //getting indices of pivot cols
+        int determined = 0;
+        for (int j = 0; j < cpy -> cols; j++){
+            if (determined == 0){
+                if (cpy->data[i][j] == 1){
+                    pivotCols[next] = j;
+                    next++;
+                    determined = 1;
+                } 
+                else if (j >= i) {
+                    freeCols[nextf] = j;
+                    nextf++;
+                    determined = 1;
+                }
+            }
+        }
+    }
+    Matrix** basis = (Matrix**)malloc(sizeof(Matrix*)*next); // allocate 
+    for(int i = 0; i < next; i++){
+        //literally just return row vectors of leading entry rows
+        basis[i] = createMatrix(cpy->rows,1);
+        for (int j = 0; j < cpy->cols; j++)
+        {
+            basis[i]->data[j][0] = cpy->data[pivotCols[i]][j];
+        }
+        
+    }
+    return basis;
+}
+
+float determinant_cofactor(Matrix* matrix){
+
+}
+
+float* eigenvalue(Matrix* matrix){ //return pointer to array of floats of eigenvalues
+    //bruh i think i need your parser
+    //or some form of symbolic manipulation stuff
+}
+
+Matrix** eigenvector(Matrix* Matrix){ //return pointer to array of eigenvectors
+
 }
