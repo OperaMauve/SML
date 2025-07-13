@@ -115,6 +115,7 @@ double determinant(Matrix* matrix){
 
     for (int i = 0; i < matrix->cols; i++){
         if (matrix->data[i][i] == 0) {
+            printf("Using gElim");
             return gElimDet(matrix);
         }
     }
