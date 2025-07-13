@@ -79,6 +79,16 @@ void printMatrix(Matrix* matrix){
     }
 }
 
+void printMatrix_p(Matrix* matrix, int n){
+    // prints the matrix 
+    for (int i = 0; i < matrix->rows; i++){
+        for(int j = 0; j < matrix->cols; j++){
+            printf("%.*f ", n, matrix->data[i][j]);
+        }
+        printf("\n");
+    }
+}
+
 Matrix* addMatrix(Matrix* term1, Matrix* term2){
     // Adds term1 and term2
     if(!sameDim(term1, term2)){
@@ -164,27 +174,31 @@ void gElim(Matrix* matrix){
 
 double gElimDet(Matrix* matrix){
     if (!isSquare(matrix)) {
-        printf("Unable to find determinant, Non square matrixs doesn't have a determinant");
+        printf("Unable to find determinant, non square matrices doesn't have a determinant");
         exit(1);
     }
     // Use Guassian elimination to obtain determinants
-    int det = 1;
+    float det = 1;
     Matrix* upperTri = createMatrix(matrix->rows, matrix->cols);
     copyMatrix(matrix, upperTri);
-
+    
     // Use Guassian elimination to obtain upper triangular form
     for (int i = 0; i < upperTri->rows; i++){
         // iterate through the amount of most required columns for upper triangular form
         for (int j = i; j < upperTri->rows; j++){
             // iterate through all the rows that is not in upper triangular form
-
+            // shouldn't swap if [i][i] is ok
             if (upperTri->data[j][i] != 0){
                 // Found suitable row for i'th column
-                det *= -1;
-
-                swapRow(upperTri, i, j);
+                if(i != j){
+                    det *= -1;
+                    swapRow(upperTri, i, j);
+                }
+                det *= upperTri->data[i][i];
                 sProdRow(upperTri, i, 1.0/upperTri->data[i][i]);
-                det *= 1.0/upperTri->data[i][i];
+
+                //printf("det is: %lf after multiplying %lf\n",det,upperTri->data[i][i]); bro its the only way ik how to debug
+
                 // Pivot the row and set its leading term to 1
                 upperTri->data[i][i] = 1;
                 // Ensures numerical stability by explicity setting the leading term to 1
@@ -215,7 +229,7 @@ void LUP(Matrix* matrix, Matrix* L, Matrix* U){
         exit(1);
     }
 
-    // Check for zero's on the principle diagonal
+    // Check for zeroes on the principle diagonal
     for (int i = 0; i < matrix->cols; i++){
         if (matrix->data[i][i] == 0) {
             printf("Unable to apply LU, zeros exist on principle diagonal");
@@ -241,7 +255,7 @@ void LUP(Matrix* matrix, Matrix* L, Matrix* U){
 double detTri(Matrix* matrix){
     // Implements forwards subsitution algorithm
     
-    if (!isLowerTri(matrix)||!isUpperTri(matrix)){  
+    if (!isLowerTri(matrix) && !isUpperTri(matrix)){  
         printf("Unable to find determinant, Matrix isn't triangular");
         exit(1);
     }
@@ -261,7 +275,7 @@ int isLowerTri(Matrix* matrix){
     
     // Checks if input is a lower triangular matrix
     for (int i = 0; i < matrix->rows; i++){
-        for (int j = i; j < matrix->cols; j++){
+        for (int j = matrix->cols-1; j > i; j--){
             if (matrix->data[i][j] != 0){
                 return 0;
             }
@@ -272,8 +286,8 @@ int isLowerTri(Matrix* matrix){
 
 int isUpperTri(Matrix* matrix){
     // Checks if input is an upper triangular matrix
-    for (int i = 0; i < matrix->rows; i++){
-        for (int j = 0; j < i + 1; j++){
+    for (int i = 1; i < matrix->rows; i++){
+        for (int j = 0; j < i; j++){
             if (matrix->data[i][j] != 0){
                 return 0;
             }
@@ -303,7 +317,7 @@ void inputMatrix(Matrix* matrix, double array[]){
     // Input an array into a matrix
     for(int i = 0; i < matrix->rows; i++){
         for(int j = 0; j < matrix->cols; j++){
-            matrix->data[i][j] = array[i*matrix->rows+j];
+            matrix->data[i][j] = array[i*(matrix->cols)+j]; //changed matrix->rows to matrix->cols
         }
     }
 }
@@ -314,4 +328,164 @@ Matrix* eye(int size){
         matrix->data[i][i] = 1.0;
     }
     return matrix;
+}
+
+int isZero(Matrix* matrix){
+    for (int i = 0; i< matrix->rows; i++){
+        for(int j = 0; j < matrix->cols; j++){
+            if(matrix->data[i][j] != 0){
+                return 0; // false
+            }
+        }
+    }
+    return 1; //true
+}
+
+int nullity(Matrix* matrix){ //dim(kern) - set 2nd input to 1 if using reduced matrix, 0 otherwise
+    Matrix* cpy = createMatrix(matrix->rows, matrix->cols);
+    copyMatrix(matrix,cpy);
+    gElim(cpy);
+    //number of 0 rows
+}
+
+Matrix** kernel(Matrix* matrix){ //return pointer to basis spanning the nullspace
+    Matrix* cpy = createMatrix(matrix->rows, matrix->cols);
+    copyMatrix(matrix,cpy);
+    gElim(cpy);
+    
+
+    int pivotCols[cpy->cols]; 
+    int freeCols[cpy->cols];
+    int next = 0;
+    int nextf = 0;
+    for(int i = 0; i < cpy-> rows; i++){
+        int determined = 0;
+        for (int j = 0; j < cpy -> cols; j++){
+            if (determined == 0){
+                if (cpy->data[i][j] == 1){
+                    pivotCols[next] = j;
+                    next++;
+                    determined = 1;
+                } 
+                else if (j >= i) {
+                    freeCols[nextf] = j;
+                    nextf++;
+                    determined = 1;
+                }
+            }
+        }
+    }
+    //nextf now has the dimension
+    Matrix** basis = (Matrix**)malloc(sizeof(Matrix*)*nextf); //array of matrices
+    for (int i = 0; i<nextf; i++){
+        basis[i] = (Matrix*)malloc(sizeof(matrix));
+        basis[i] = createMatrix(cpy->cols,1);
+        for(int j = 0; j<cpy->rows; j++){
+            //freeCols index the columns which correspond to free variables
+            //j iterates through all the rows
+            //i iterates through the free variable indices
+
+            if(j == freeCols[i]){
+                basis[i]->data[j][0] = 1;
+            }
+            else{
+                basis[i]->data[j][0]=-1*(cpy->data[j][freeCols[i]]);
+            }
+        }
+    }
+    
+    return basis;
+    // freecols[i] = column of the ith free variable xi
+
+
+
+}
+
+Matrix** colSpace(Matrix* matrix){ //return ptr to array of basis for span/img
+    Matrix* cpy = createMatrix(matrix->rows, matrix->cols);
+    copyMatrix(matrix,cpy);
+    gElim(cpy);
+    int pivotCols[cpy->cols]; 
+    int freeCols[cpy->cols];
+    int next = 0;
+    int nextf = 0;
+    for(int i = 0; i < cpy-> rows; i++){ //getting indices of pivot cols
+        int determined = 0;
+        for (int j = 0; j < cpy -> cols; j++){
+            if (determined == 0){
+                if (cpy->data[i][j] == 1){
+                    pivotCols[next] = j;
+                    next++;
+                    determined = 1;
+                } 
+                else if (j >= i) {
+                    freeCols[nextf] = j;
+                    nextf++;
+                    determined = 1;
+                }
+            }
+        }
+    }
+    Matrix** basis = (Matrix**)malloc(sizeof(Matrix*)*next); // allocate 
+    for(int i = 0; i < next; i++){
+        //literally just return col vectors of leading entry rows
+        basis[i] = createMatrix(cpy->rows,1);
+        for (int j = 0; j < cpy->rows; j++)
+        {
+            basis[i]->data[j][0] = cpy->data[j][pivotCols[i]];
+        }
+        
+    }
+    return basis;
+}
+
+Matrix** rowSpace(Matrix* matrix){ //return ptr to array of basis for span/img
+    Matrix* cpy = createMatrix(matrix->rows, matrix->cols);
+    copyMatrix(matrix,cpy);
+    gElim(cpy);
+    int pivotCols[cpy->cols]; 
+    int freeCols[cpy->cols];
+    int next = 0;
+    int nextf = 0;
+    for(int i = 0; i < cpy-> rows; i++){ //getting indices of pivot cols
+        int determined = 0;
+        for (int j = 0; j < cpy -> cols; j++){
+            if (determined == 0){
+                if (cpy->data[i][j] == 1){
+                    pivotCols[next] = j;
+                    next++;
+                    determined = 1;
+                } 
+                else if (j >= i) {
+                    freeCols[nextf] = j;
+                    nextf++;
+                    determined = 1;
+                }
+            }
+        }
+    }
+    Matrix** basis = (Matrix**)malloc(sizeof(Matrix*)*next); // allocate 
+    for(int i = 0; i < next; i++){
+        //literally just return row vectors of leading entry rows
+        basis[i] = createMatrix(cpy->rows,1);
+        for (int j = 0; j < cpy->cols; j++)
+        {
+            basis[i]->data[j][0] = cpy->data[pivotCols[i]][j];
+        }
+        
+    }
+    return basis;
+}
+
+float determinant_cofactor(Matrix* matrix){
+
+}
+
+float* eigenvalue(Matrix* matrix){ //return pointer to array of floats of eigenvalues
+    //bruh i think i need your parser
+    //or some form of symbolic manipulation stuff
+}
+
+Matrix** eigenvector(Matrix* Matrix){ //return pointer to array of eigenvectors
+
 }

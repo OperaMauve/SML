@@ -10,7 +10,7 @@ int max(int a, int b){
 
 int min(int a, int b){
     // Returns the lesser between a and b, if they are equal, return a
-    if ( a > b){
+    if (a > b){
         return b;
     }
     return a;
@@ -18,7 +18,7 @@ int min(int a, int b){
 
 double maxDouble(double a, double b){
     // Returns the greater between a and b, if they are equal, return a
-    if ( a < b){
+    if (a < b){
         return b;
     }
     return a;
@@ -26,7 +26,7 @@ double maxDouble(double a, double b){
 
 double minDouble(double a, double b){
     // Returns the lesser between a and b, if they are equal, return a
-    if ( a > b){
+    if (a > b){
         return b;
     }
     return a;
