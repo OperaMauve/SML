@@ -58,7 +58,7 @@ void lexer(Stack* instruction, Stack* output){
             free(bracOut->element);
             free(bracOut);
             prevWeight = 0;
-        } else if(lexerPriority < prevWeight) {
+        } else if(lexerPriority(instruction->element[i]) < prevWeight) {
             // Push buffer to output
             for (int j = 0; j < buffer->top; j++){
                 output->top += 1;
@@ -79,7 +79,7 @@ void lexer(Stack* instruction, Stack* output){
             buffer->top += 1;
             buffer->element = (char*)realloc(buffer->element, sizeof(char)*(buffer->top+1));
             buffer->element[buffer->top] = instruction->element[i];
-            
+
             prevWeight = lexerPriority(instruction->element[i]);
         } else {
             // Add to buffer
@@ -90,21 +90,6 @@ void lexer(Stack* instruction, Stack* output){
         }
     }
 }
-
-void applyFunction(Matrix* matrix, char *function){
-    // Apply function to each element on the matrix
-    //lexer
-
-    for (int i = 0; i < sizeof(function)/sizeof(char); i++){
-        // categories characters, and then if there is a different category of characters in the next character, then switch to the next token
-        // category 0, numbers
-        // category 1, operator
-        // category 2, brackets
-        // category 3, element x
-
-    }
-}
-
 
 int categorise(char character){
     if (isNumber(character)){
@@ -137,3 +122,17 @@ int lexerPriority(char a){
     printf("Invalid Syntax");
     return -1;
 } 
+
+void applyFunction(Matrix* matrix, char *function){
+    // Apply function to each element on the matrix
+    //lexer
+
+    for (int i = 0; i < sizeof(function)/sizeof(char); i++){
+        // categories characters, and then if there is a different category of characters in the next character, then switch to the next token
+        // category 0, numbers
+        // category 1, operator
+        // category 2, brackets
+        // category 3, element x
+
+    }
+}

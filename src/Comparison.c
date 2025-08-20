@@ -2,7 +2,7 @@
 
 int max(int a, int b){
     // Returns the greater between a and b, if they are equal, return a
-    if ( a < b){
+    if (a < b){
         return b;
     }
     return a;
@@ -31,3 +31,4 @@ double minDouble(double a, double b){
     }
     return a;
 }
+
